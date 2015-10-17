@@ -11,7 +11,7 @@ var propertiesObject = {
   // noVariants: 'true',
   // dateDescriptor: 'thisMonth',
   // orderBy: '-onsaleDate',
-  limit: 50,
+  limit: 24,
   apikey: marvelApi.apiKey
 };
 
@@ -27,10 +27,12 @@ var securityHash = function() {
 propertiesObject.ts = ts();
 propertiesObject.hash = securityHash();
 
-var results = []
-var coversForMontage = []
+var results = [];
+var coversForMontage = [];
+var counter = 0;
 
 var makeMontage = function() {
+  console.log("Creating montage");
   var g = gm(coversForMontage.shift());
   coversForMontage.forEach(function(image){
       g.montage(image);
@@ -39,7 +41,7 @@ var makeMontage = function() {
    .filter('Welsh')
    .tile('6x2')
    .write('montage.jpg', function(err) {
-      if(!err) console.log("Montage image created and written.");
+      if(!err) console.log("Montage image created and written");
   });
 }
 
@@ -51,23 +53,18 @@ var validImageRatio = function(value) {
 }
 
 var selectImagesForMontage = function() {
-  if (results.length === 0) console.log("Not enough valid results to make montage.")
-  else if (coversForMontage.length === 12) makeMontage();
-  else {
-    var result = results.shift();
+  results.forEach(function(result) {
     var image_url = result.thumbnail.path + '.' + result.thumbnail.extension;
-    // Validate image
     gm(image_url).size(function(err, value){
-      if (!err) {
-        if (validImageRatio(value)) {
-          coversForMontage.push(image_url);
-          console.log('Adding to montage: ' + image_url);
-        }
+      if (!err && counter < 12 && validImageRatio(value)) {
+        counter += 1;
+        console.log('Image counter: ' + counter);
+        console.log('Adding to montage: ' + image_url);
+        coversForMontage.push(image_url);
+        if (counter === 12) makeMontage();
       }
-      selectImagesForMontage();
-    })
-  }
-  return
+    });
+  });
 }
 
 request({url:url, qs:propertiesObject}, function(err, response, body) {
