@@ -1,15 +1,17 @@
 var crypto = require('crypto');
 var request = require('request');
 var gm = require('gm').subClass({imageMagick: true});
-var fs = require('fs');
 var marvelApi = require('./marvel_api_credentials.json')
 
 var url = 'http://gateway.marvel.com/v1/public/comics'
 
 var propertiesObject = {
-  // format: 'comic',
+  format: 'comic',
   // formatType: 'comic',
   // noVariants: 'true',
+  // dateDescriptor: 'thisMonth',
+  // orderBy: '-onsaleDate',
+  limit: 50,
   apikey: marvelApi.apiKey
 };
 
@@ -18,7 +20,6 @@ var ts = function() {
 }
 
 var securityHash = function() {
-  // TODO: Store away api info
   var hash = propertiesObject.ts + marvelApi.apiSecret + marvelApi.apiKey
   return crypto.createHash('md5').update(hash).digest('hex')
 }
@@ -26,20 +27,52 @@ var securityHash = function() {
 propertiesObject.ts = ts();
 propertiesObject.hash = securityHash();
 
+var results = []
+var coversForMontage = []
+
+var makeMontage = function() {
+  var g = gm(coversForMontage.shift());
+  coversForMontage.forEach(function(image){
+      g.montage(image);
+  });
+  g.geometry('280x425+2+2!')
+   .filter('Welsh')
+   .tile('6x2')
+   .write('montage.jpg', function(err) {
+      if(!err) console.log("Montage image created and written.");
+  });
+}
+
+var validImageRatio = function(value) {
+  var ratio = parseInt(value.width) / parseInt(value.height);
+  var MIN_RATIO = 549/850
+  var MAX_RATIO = 580/850
+  return ratio > MIN_RATIO && ratio < MAX_RATIO
+}
+
+var selectImagesForMontage = function() {
+  if (results.length === 0) console.log("Not enough valid results to make montage.")
+  else if (coversForMontage.length === 12) makeMontage();
+  else {
+    var result = results.shift();
+    var image_url = result.thumbnail.path + '.' + result.thumbnail.extension;
+    // Validate image
+    gm(image_url).size(function(err, value){
+      if (!err) {
+        if (validImageRatio(value)) {
+          coversForMontage.push(image_url);
+          console.log('Adding to montage: ' + image_url);
+        }
+      }
+      selectImagesForMontage();
+    })
+  }
+  return
+}
+
 request({url:url, qs:propertiesObject}, function(err, response, body) {
   if(err) { console.log(err); return; }
   console.log("Get response: " + response.statusCode);
-  var results = JSON.parse(body).data.results;
-  // console.log(results);
-  for (var i = 0; i < results.length; i++) {
-    var result = results[i];
-    console.log(result.thumbnail.path)
-    gm(result.thumbnail.path + '.' + result.thumbnail.extension)
-    .resize(280, 425)
-    .filter('Welsh')
-    .noProfile()
-    .write('scaled_covers/' + i + '.png', function (err) {
-      if (!err) console.log('done');
-    });
-  }
+  results = JSON.parse(body).data.results;
+  selectImagesForMontage();
 });
