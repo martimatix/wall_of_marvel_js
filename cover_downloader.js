@@ -40,6 +40,7 @@ var makeMontage = function() {
   g.geometry('280x425+2+2!')
    .filter('Welsh')
    .tile('6x2')
+   .quality(65)
    .write('montage.jpg', function(err) {
       if(!err) console.log("Montage image created and written");
   });
