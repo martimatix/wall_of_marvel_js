@@ -13,7 +13,7 @@ var crypto = require('crypto'),
 var results = [],
     coversForMontage = [],
     imageCounter = 0,
-    numberOfImagesInMontage = 12,
+    NUBMER_OF_IMAGES_IN_MONTAGE = 12,
     // Settings for getting the latest comics
     propertiesObject = {
       format: 'comic',
@@ -23,7 +23,7 @@ var results = [],
       orderBy: '-onsaleDate',
       // Get twice the number of required images as some results can't be used
       // in the montage
-      limit: numberOfImagesInMontage * 2,
+      limit: NUBMER_OF_IMAGES_IN_MONTAGE * 2,
       apikey: marvelApi.apiKey
     };
 
@@ -69,13 +69,13 @@ var getImageAndValidate = function(result) {
 };
 
 var addImageToMontageIfValid = function(err, value, image_url) {
-  if (!err && imageCounter < numberOfImagesInMontage && validImageRatio(value)) {
+  if (!err && imageCounter < NUBMER_OF_IMAGES_IN_MONTAGE && validImageRatio(value)) {
     imageCounter += 1;
     console.log('Image counter: ' + imageCounter);
     console.log('Adding to montage: ' + image_url);
     coversForMontage.push(image_url);
     // Make montage if enough images available
-    if (imageCounter === numberOfImagesInMontage) makeMontage();
+    if (imageCounter === NUBMER_OF_IMAGES_IN_MONTAGE) makeMontage();
   }
 };
 
