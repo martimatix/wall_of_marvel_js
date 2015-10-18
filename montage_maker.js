@@ -1,19 +1,21 @@
 // Montage Maker
 // Makes a montage from Marvel comic book covers
 
-
-// Required libraries and credentials
+// dependencies
 var crypto = require('crypto'),
     request = require('request'),
     gm = require('gm').subClass({imageMagick: true}),
     marvelApi = require('./marvel_api_credentials.json');
 
+// Global constants
+var NUBMER_OF_IMAGES_IN_MONTAGE = 12,
+    MIN_RATIO = 549/850,
+    MAX_RATIO = 580/850;
 
-// Globals
+// Global variables
 var results = [],
     coversForMontage = [],
     imageCounter = 0,
-    NUBMER_OF_IMAGES_IN_MONTAGE = 12,
     // Settings for getting the latest comics
     propertiesObject = {
       format: 'comic',
@@ -81,8 +83,6 @@ var addImageToMontageIfValid = function(err, value, image_url) {
 
 var validImageRatio = function(value) {
   var ratio = parseInt(value.width) / parseInt(value.height);
-  var MIN_RATIO = 549/850;
-  var MAX_RATIO = 580/850;
   return ratio > MIN_RATIO && ratio < MAX_RATIO;
 };
 
