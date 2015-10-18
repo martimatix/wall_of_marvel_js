@@ -1,4 +1,6 @@
-// Marvel Wallpaper Maker
+// Montage Maker
+// Makes a montage from Marvel comic book covers
+
 
 // Required libraries and credentials
 var crypto = require('crypto'),
@@ -12,12 +14,15 @@ var results = [],
     coversForMontage = [],
     imageCounter = 0,
     numberOfImagesInMontage = 12,
+    // Settings for getting the latest comics
     propertiesObject = {
       format: 'comic',
       formatType: 'comic',
       noVariants: 'true',
       dateDescriptor: 'thisWeek',
       orderBy: '-onsaleDate',
+      // Get twice the number of required images as some results can't be used
+      // in the montage
       limit: numberOfImagesInMontage * 2,
       apikey: marvelApi.apiKey
     };
@@ -58,7 +63,7 @@ var getImageAndValidate = function(result) {
   // Get image url
   var image_url = result.thumbnail.path + '.' + result.thumbnail.extension;
   gm(image_url).size(function(err, value){
-    // Validate images - some images aren't the right dimension and some images not available
+    // Validate images - some images don't have the required dimensions and some images not available
     addImageToMontageIfValid(err, value, image_url);
   });
 };
