@@ -7,17 +7,17 @@ var marvelApi = require('./marvel_api_credentials.json')
 var results = [];
 var coversForMontage = [];
 var imageCounter = 0;
+var numberOfImagesInMontage = 12;
 var propertiesObject = {
   format: 'comic',
   formatType: 'comic',
   noVariants: 'true',
   dateDescriptor: 'thisWeek',
   orderBy: '-onsaleDate',
-  limit: 24,
+  limit: numberOfImagesInMontage * 2,
   apikey: marvelApi.apiKey
 };
 
-// TODO: Remove magic numbers
 // TODO: More comments
 // TODO: Parse through jshint
 // TODO: Download all valid images and sample from them
@@ -64,13 +64,13 @@ var getImageAndValidate = function(result) {
 }
 
 var addImageToMontageIfValid = function(err, value, image_url) {
-  if (!err && imageCounter < 12 && validImageRatio(value)) {
+  if (!err && imageCounter < numberOfImagesInMontage && validImageRatio(value)) {
     imageCounter += 1;
     console.log('Image counter: ' + imageCounter);
     console.log('Adding to montage: ' + image_url);
     coversForMontage.push(image_url);
     // Make montage if enough images available
-    if (imageCounter === 12) makeMontage();
+    if (imageCounter === numberOfImagesInMontage) makeMontage();
   }
 }
 
