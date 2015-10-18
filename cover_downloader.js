@@ -3,17 +3,16 @@ var request = require('request');
 var gm = require('gm').subClass({imageMagick: true});
 var marvelApi = require('./marvel_api_credentials.json')
 
-
 // Globals
 var results = [];
 var coversForMontage = [];
 var imageCounter = 0;
 var propertiesObject = {
   format: 'comic',
-  // formatType: 'comic',
-  // noVariants: 'true',
-  // dateDescriptor: 'thisWeek',
-  // orderBy: '-onsaleDate',
+  formatType: 'comic',
+  noVariants: 'true',
+  dateDescriptor: 'thisWeek',
+  orderBy: '-onsaleDate',
   limit: 24,
   apikey: marvelApi.apiKey
 };

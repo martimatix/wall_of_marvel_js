@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Tab</title>
+  <style>
+  html {
+    background: url("montage.jpg");
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-position: center top;
+    background-size: cover;
+  }
+
+  @media screen and (max-aspect-ratio: 9/5) {
+    html {
+      background-size: contain;
+    }
+  }
+
+  @media (max-width: 700px) {
+    html {
+      background-size: 700px;
+    }
+  }
+
+  @media (min-width: 1700) {
+    html {
+      background-position: center center;
+      background-size: 1700;
+    }
+  }
+
+  .mask {
+    background-color: white;
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    opacity: 0;
+    overflow:hidden;
+    animation: fadein 0.8s;
+  }
+
+  @keyframes fadein {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  </style>
+</head>
+<body>
+  <div class="mask"></div>
+</body>
+</html>
