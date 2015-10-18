@@ -3,15 +3,11 @@ var request = require('request');
 var gm = require('gm').subClass({imageMagick: true});
 var marvelApi = require('./marvel_api_credentials.json')
 
-// TODO: Remove magic numbers
-// TODO: More comments
-// TODO: More refactoring
-// TODO: Make intialize function
-// TODO: Parse through jshint
-// TODO: Download all valid images and sample from them
 
-var url = 'http://gateway.marvel.com/v1/public/comics'
-
+// Globals
+var results = [];
+var coversForMontage = [];
+var imageCounter = 0;
 var propertiesObject = {
   format: 'comic',
   // formatType: 'comic',
@@ -22,6 +18,18 @@ var propertiesObject = {
   apikey: marvelApi.apiKey
 };
 
+// TODO: Remove magic numbers
+// TODO: More comments
+// TODO: Parse through jshint
+// TODO: Download all valid images and sample from them
+
+
+// Functions
+var initialize = function() {
+  propertiesObject.ts = ts();
+  propertiesObject.hash = securityHash();
+}
+
 var ts = function() {
   return Math.floor(Date.now() / 1000).toString();
 }
@@ -31,12 +39,48 @@ var securityHash = function() {
   return crypto.createHash('md5').update(hash).digest('hex')
 }
 
-propertiesObject.ts = ts();
-propertiesObject.hash = securityHash();
+var makeApiCall = function() {
+  var url = 'http://gateway.marvel.com/v1/public/comics'
+  request({url:url, qs:propertiesObject}, function(err, response, body) {
+    if(err) { console.log(err); return; }
+    console.log("Get response: " + response.statusCode);
+    results = JSON.parse(body).data.results;
+    selectImagesAndMakeMontage();
+  });
+}
 
-var results = [];
-var coversForMontage = [];
-var counter = 0;
+var selectImagesAndMakeMontage = function() {
+  results.forEach(function(result) {
+    getImageAndValidate(result);
+  });
+}
+
+var getImageAndValidate = function(result) {
+  // Get image url
+  var image_url = result.thumbnail.path + '.' + result.thumbnail.extension;
+  gm(image_url).size(function(err, value){
+    // Validate images - some images aren't the right dimension and some images not available
+    addImageToMontageIfValid(err, value, image_url);
+  });
+}
+
+var addImageToMontageIfValid = function(err, value, image_url) {
+  if (!err && imageCounter < 12 && validImageRatio(value)) {
+    imageCounter += 1;
+    console.log('Image counter: ' + imageCounter);
+    console.log('Adding to montage: ' + image_url);
+    coversForMontage.push(image_url);
+    // Make montage if enough images available
+    if (imageCounter === 12) makeMontage();
+  }
+}
+
+var validImageRatio = function(value) {
+  var ratio = parseInt(value.width) / parseInt(value.height);
+  var MIN_RATIO = 549/850;
+  var MAX_RATIO = 580/850;
+  return ratio > MIN_RATIO && ratio < MAX_RATIO
+}
 
 var makeMontage = function() {
   console.log("\nCreating montage");
@@ -53,43 +97,7 @@ var makeMontage = function() {
   });
 }
 
-var validImageRatio = function(value) {
-  var ratio = parseInt(value.width) / parseInt(value.height);
-  var MIN_RATIO = 549/850;
-  var MAX_RATIO = 580/850;
-  return ratio > MIN_RATIO && ratio < MAX_RATIO
-}
 
-var addImageToMontageIfValid = function(err, value, image_url) {
-  if (!err && counter < 12 && validImageRatio(value)) {
-    counter += 1;
-    console.log('Image counter: ' + counter);
-    console.log('Adding to montage: ' + image_url);
-    coversForMontage.push(image_url);
-    // Make montage if enough images available
-    if (counter === 12) makeMontage();
-  }
-}
-
-var getImageAndValidate = function(result) {
-  // Get image url
-  var image_url = result.thumbnail.path + '.' + result.thumbnail.extension;
-  gm(image_url).size(function(err, value){
-    // Validate images - some images aren't the right dimension and some images not available
-    addImageToMontageIfValid(err, value, image_url);
-  });
-}
-
-var selectImagesAndMakeMontage = function() {
-  results.forEach(function(result) {
-    getImageAndValidate(result);
-  });
-}
-
-// TODO: Wrap in a function
-request({url:url, qs:propertiesObject}, function(err, response, body) {
-  if(err) { console.log(err); return; }
-  console.log("Get response: " + response.statusCode);
-  results = JSON.parse(body).data.results;
-  selectImagesAndMakeMontage();
-});
+// Function Calls
+initialize();
+makeApiCall();
