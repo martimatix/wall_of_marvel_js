@@ -5,12 +5,17 @@
 var crypto = require('crypto'),
     request = require('request'),
     gm = require('gm').subClass({imageMagick: true}),
-    marvelApi = require('./marvel_api_credentials.json');
+    marvelApi = require('./marvel_api_credentials.json'),
+    AWS = require('aws-sdk');
 
 // Global constants
 var NUBMER_OF_IMAGES_IN_MONTAGE = 12,
     MIN_RATIO = 549/850,
-    MAX_RATIO = 580/850;
+    MAX_RATIO = 580/850,
+    IMAGE_FORMAT = 'JPG';
+
+// get reference to S3 client
+var s3 = new AWS.S3();
 
 // Global variables
 var results = [],
@@ -96,8 +101,21 @@ var makeMontage = function() {
    .filter('Welsh')
    .tile('6x2')
    .quality(65)
-   .write('montage.jpg', function(err) {
-      if(!err) console.log("Montage image created and written");
+   .buffer(IMAGE_FORMAT, function(err, buffer) {
+      if (err) console.log("There was a problem making the montage.");
+      else upload(buffer);
+  });
+};
+
+var upload = function(data) {
+	s3.putObject({
+		Bucket: 'comicbookwall',
+		Key: 'montage',
+		Body: data,
+		ContentType: IMAGE_FORMAT
+	}, function (err) {
+    if (err) console.log("There was a problem writing to S3.");
+    else console.log("Montage image created and written");
   });
 };
 
