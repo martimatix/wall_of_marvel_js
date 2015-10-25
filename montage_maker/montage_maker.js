@@ -101,7 +101,7 @@ var makeMontage = function() {
   g.geometry('280x425+2+2!')
    .filter('Welsh')
    .tile('6x2')
-   .quality(65)
+   .quality(40)
    .toBuffer(IMAGE_FORMAT, function(err, buffer) {
       if (err) console.log("There was a problem making the montage.");
       else upload(buffer);
