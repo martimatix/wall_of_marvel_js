@@ -101,7 +101,7 @@ var makeMontage = function() {
    .filter('Welsh')
    .tile('6x2')
    .quality(65)
-   .buffer(IMAGE_FORMAT, function(err, buffer) {
+   .toBuffer(IMAGE_FORMAT, function(err, buffer) {
       if (err) console.log("There was a problem making the montage.");
       else upload(buffer);
   });
@@ -121,5 +121,7 @@ var upload = function(data) {
 
 
 // Function Calls
-initialize();
-makeApiCall();
+exports.handler = function(event, context) {
+  initialize();
+  makeApiCall();
+}

@@ -5,5 +5,11 @@
 # Igonore Mac OS system files
 *.DS_Store
 
+# Ignore zip files
+*.zip
+
+# Ignore aws_cli_command
+aws_cli_command.txt
+
 # Ignore Marvel API Credentials
 marvel_api_credentials.json
