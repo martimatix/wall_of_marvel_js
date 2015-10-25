@@ -8,8 +8,8 @@
 # Ignore zip files
 *.zip
 
-# Ignore aws_cli_command
-aws_cli_command.txt
+# Ignore personal notes
+personal_notes.txt
 
 # Ignore Marvel API Credentials
 marvel_api_credentials.json

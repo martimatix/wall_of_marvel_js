@@ -21,6 +21,7 @@ var s3 = new AWS.S3();
 var results = [],
     coversForMontage = [],
     imageCounter = 0,
+    handlerContext,
     // Settings for getting the latest comics
     propertiesObject = {
       format: 'comic',
@@ -116,12 +117,15 @@ var upload = function(data) {
 	}, function (err) {
     if (err) console.log("There was a problem writing to S3.");
     else console.log("Montage image created and written");
+    // Let Lambda know we've finished work
+    handlerContext.done();
   });
 };
 
 
 // Function Calls
 exports.handler = function(event, context) {
+  handlerContext = context;
   initialize();
   makeApiCall();
 }
