@@ -111,12 +111,15 @@ var makeMontage = function() {
 var upload = function(data) {
 	s3.putObject({
 		Bucket: 'comicbookwall',
-		Key: 'montage',
+		Key: 'montage.jpg',
+    ACL: 'public-read',
 		Body: data,
 		ContentType: IMAGE_FORMAT
 	}, function (err) {
-    if (err) console.log("There was a problem writing to S3.");
-    else console.log("Montage image created and written");
+    if (err) {
+      console.log("There was a problem writing to S3.");
+      console.log(err);
+    } else console.log("Montage image created and written");
     // Let Lambda know we've finished work
     handlerContext.done();
   });
