@@ -102,6 +102,7 @@ var makeMontage = function() {
    .filter('Welsh')
    .tile('6x2')
    .quality(40)
+   .interlace('line')
    .toBuffer(IMAGE_FORMAT, function(err, buffer) {
       if (err) console.log("There was a problem making the montage.");
       else upload(buffer);
