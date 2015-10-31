@@ -1,6 +1,7 @@
 # Ignore images
 *.jpg
 *.png
+*.ai
 
 # Igonore Mac OS system files
 *.DS_Store

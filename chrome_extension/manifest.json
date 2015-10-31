@@ -1,9 +1,11 @@
 {
   "manifest_version": 2,
 
-  "name": "Comic Book Wall",
-  "description": "Shows the latest comic book covers from Marvel when opening a new tab",
-  "version": "0.1",
+  "name": "Wall of Marvel",
+  "description": "Shows the latest comic book covers from Marvel when opening a new tab.",
+  "version": "1.0",
+  "icons": { "128": "icon128.png" },
+  "author": "martimatix",
   "chrome_url_overrides" : {
     "newtab": "index.html"
   },
