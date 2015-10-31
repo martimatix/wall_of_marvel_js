@@ -26,9 +26,6 @@ var results = [],
     propertiesObject = {
       format: 'comic',
       formatType: 'comic',
-      noVariants: 'true',
-      dateDescriptor: 'thisWeek',
-      orderBy: '-onsaleDate',
       // Get twice the number of required images as some results can't be used
       // in the montage
       limit: NUBMER_OF_IMAGES_IN_MONTAGE * 2,
@@ -37,9 +34,18 @@ var results = [],
 
 
 // Functions
+var coinToss = function() {
+  return Math.random() > 0.5;
+}
+
 var initialize = function() {
   propertiesObject.ts = ts();
   propertiesObject.hash = securityHash();
+  // Randomly assign properties to create more variations in montage
+  if (coinToss()) propertiesObject.noVariants = true;
+  if (coinToss()) propertiesObject.orderBy = '-onsaleDate';
+  var dateDescriptor = coinToss() ? 'thisWeek' : 'thisMonth';
+  propertiesObject.dateDescriptor = dateDescriptor;
 };
 
 var ts = function() {
