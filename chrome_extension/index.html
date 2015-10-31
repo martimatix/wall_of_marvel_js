@@ -48,9 +48,38 @@
     to   { opacity: 0; }
   }
 
+  .attribution {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 0.2em;
+    border-top-left-radius: 0.2em;
+  }
+
+  a:link {
+    font-family: sans-serif;
+    color: #EEE;
+    font-size: 1em;
+    text-decoration: none;
+    text-shadow: 0 0 0.5em #000;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: #EEE;
+  }
+
   </style>
 </head>
 <body>
   <div class="mask"></div>
+  <div class="attribution">
+    <a href="http://www.marvel.com">Data provided by Marvel. © 2015 Marvel</a>
+  </div>
 </body>
 </html>
