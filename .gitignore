@@ -14,3 +14,7 @@ personal_notes.txt
 
 # Ignore Marvel API Credentials
 marvel_api_credentials.json
+
+# Ignore chrome extension stuff
+*.crx
+*.pem
