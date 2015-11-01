@@ -1,5 +1,8 @@
 # Wall of Marvel
 
+## Live demo
+[Chrome web store link](https://chrome.google.com/webstore/detail/wall-of-marvel/lbjipikblijeahgenjlenchakampaglh)
+
 ## What does it do?
 
 When loading a new tab in the Chrome web browser, this extension will load twelve of Marvel's most recent comics.
