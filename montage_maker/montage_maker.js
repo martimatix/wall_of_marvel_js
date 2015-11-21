@@ -104,7 +104,7 @@ var makeMontage = function() {
   coversForMontage.forEach(function(image){
       g.montage(image);
   });
-  g.geometry('280x425+2+2!')
+  g.geometry('320x486+2+2!')
    .filter('Welsh')
    .tile('6x2')
    .quality(60)
