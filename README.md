@@ -29,4 +29,4 @@ Thanks to Waylan Sands for helping me with designing the logo.
 
 ## Attribution
 
-Data for this project has been provided by Marvel. © 2015 Marvel
+Data for this project has been provided by Marvel. © 2016 Marvel
